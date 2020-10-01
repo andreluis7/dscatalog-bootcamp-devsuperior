@@ -15,14 +15,14 @@ import com.devsuperior.dscatalog.services.exceptions.EntityNotFoundException;
 
 @Service
 public class CategoryService {
-	
+
 	@Autowired
 	private CategoryRepository repository;
-	
+
 	@Transactional(readOnly = true)
-	public List<CategoryDTO> findAll(){
+	public List<CategoryDTO> findAll() {
 		List<Category> list = repository.findAll();
-		
+
 		return list.stream().map(x -> new CategoryDTO(x)).collect(Collectors.toList());
 	}
 
@@ -30,7 +30,16 @@ public class CategoryService {
 	public CategoryDTO findById(Long id) {
 		Optional<Category> obj = repository.findById(id);
 		Category entity = obj.orElseThrow(() -> new EntityNotFoundException("Entity not found"));
-		return new CategoryDTO(entity)
-;	}
+		return new CategoryDTO(entity);
+	}
+
+	@Transactional
+	public CategoryDTO insert(CategoryDTO dto) {
+		Category entity = new Category();
+		entity.setName(dto.getName());
+		entity = repository.save(entity);
+		
+		return new CategoryDTO(entity);
+	}
 
 }
